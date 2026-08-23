@@ -9,6 +9,7 @@
     "bsky",
     "cooldown",
     "corepack",
+    "daigirin",
     "discardable",
     "Hashable",
     "hasher",
@@ -19,6 +20,7 @@
     "MVVM",
     "nodenv",
     "noto",
+    "Solana",
     "Sonoma",
     "struct",
     "techbook",
@@ -26,6 +28,7 @@
     "textlint",
     "textlintignore",
     "typealias",
-    "vivliostyle"
+    "vivliostyle",
+    "YUMEMI"
   ]
 }

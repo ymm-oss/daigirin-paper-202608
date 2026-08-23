@@ -115,14 +115,25 @@ img {
      <div class="detail">…</div>
    </div></section>
    ---------------------------------------------------------- */
+.book {
+  /* 表紙とテキストの塊は面をまたがせない */
+  break-inside: avoid;
+}
+
 .book .cover {
-  flex: 1;
-  padding: 10px;
+  /* 表紙幅を実寸で固定する。flex 比率だと紙面幅に応じて高さが変わり、
+     ブロックが入りきらず面下部に余白が出る（1 面目で発生した） */
+  flex: 0 0 45mm;
+  padding: 4mm 4mm 4mm 0;
 }
 
 .book .detail {
-  flex: 2;
-  padding: 10px;
+  flex: 1;
+  padding: 4mm 0 4mm 4mm;
+}
+
+.book .detail h3 {
+  margin-top: 0;
 }
 
 /* --- テキスト＋画像ブロック ---------------------------------
@@ -137,7 +148,98 @@ img {
 }
 
 .text-image .image {
-  width: 160px;
+  width: 30mm;
   height: auto;
-  padding: 10px;
+  padding: 0 0 0 4mm;
+}
+
+/* QR コードは枠線を外し、白のクワイエットゾーンを紙面側で足す。
+   帆風のガイドは 15mm 以上かつ周囲に余白を推奨している。 */
+.text-image .image img {
+  border: none;
+  padding: 2mm;
+  background: #fff;
+}
+
+
+/* --- 表紙ギャラリー（紹介文なしの既刊） ---------------------
+   <section class="book-gallery">
+     <div class="gallery-item"><img …/><div class="caption">…</div></div>
+   </section>
+   3 列で組む。calc で列数を固定し、紙面幅が変わっても崩れないようにする。
+   ---------------------------------------------------------- */
+.book-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  /* 列間を広めに取って表紙を締める。紙面幅は使い切ったまま
+     1 冊あたりの高さを下げられるので、面あたりの収まりを調整できる */
+  column-gap: 12mm;
+  row-gap: 5mm;
+  break-inside: avoid;
+}
+
+.book-gallery .gallery-item {
+  width: calc((100% - 24mm) / 3);
+  break-inside: avoid;
+}
+
+/* 4 列にする修飾クラス。gap 3 つ分を差し引いてから割る */
+.book-gallery.cols-4 {
+  column-gap: 5mm;
+}
+
+.book-gallery.cols-4 .gallery-item {
+  width: calc((100% - 15mm) / 4);
+}
+
+.book-gallery .gallery-item img {
+  width: 100%;
+  height: auto;
+}
+
+.book-gallery .caption {
+  font-size: 0.85em;
+  line-height: 1.5;
+  text-align: center;
+  margin-top: 1mm;
+}
+
+.book-gallery .caption-sub {
+  font-size: 0.9em;
+  color: #666;
+}
+
+
+/* --- 画像を 2 枚横並びにする ---------------------------------
+   <div class="image-pair"><img …/><img …/></div>
+   高さを揃えて幅をアスペクト比に任せる。縦横比の違う写真を並べても
+   天地が揃う。等幅にすると比の違いで下端がずれる。
+   ---------------------------------------------------------- */
+.image-pair {
+  display: flex;
+  gap: 4mm;
+  align-items: flex-start;
+  break-inside: avoid;
+}
+
+.image-pair img {
+  /* 高さは 2 枚のアスペクト比の和から逆算した値。
+     190mm（本文幅） = gap 4mm + 高さ x (4:3 + 4:3) となるように 67mm。
+     画像を差し替えたらこの値を再計算する。 */
+  height: 67mm;
+  width: auto;
+}
+
+/* --- 画像を 1 枚だけ置く -------------------------------------
+   .image-pair の下に続けて、写真 1 枚分の幅で左揃えに置く。
+   幅を上段の 1 枚と揃えることで 2 段のグリッドが通る。
+   ---------------------------------------------------------- */
+.image-single {
+  margin-top: 4mm;
+  break-inside: avoid;
+}
+
+.image-single img {
+  width: 90mm;
+  height: auto;
 }

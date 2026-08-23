@@ -9,7 +9,11 @@
         "space": "always"
       }
     },
-    "preset-ja-technical-writing": true,
+    "preset-ja-technical-writing": {
+      "max-kanji-continuous-len": {
+        "allow": ["大技林製作委員会", "技術書同人誌博覧会", "同人誌即売会"]
+      }
+    },
     "@textlint-ja/preset-ai-writing": {
       "ai-tech-writing-guideline": {
         "severity": "info"
