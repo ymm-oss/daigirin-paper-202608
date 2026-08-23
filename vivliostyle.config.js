@@ -1,6 +1,6 @@
 module.exports = {
-  title: 'タイトル名',
-  author: '著者名',
+  title: 'ゆめみ執筆委員会 フリーペーパー',
+  author: 'ゆめみ執筆委員会',
   language: 'ja',
   size: 'A4',
   theme: [

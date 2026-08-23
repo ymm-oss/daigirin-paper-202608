@@ -63,3 +63,81 @@
   word-wrap: break-word;
   white-space: nowrap;
 }
+
+/* ============================================================
+   ここから下は daigirin-paper 固有の設定
+   （202504 版 theme/styles.css からの引き継ぎ ＋ 今回の追加）
+   ============================================================ */
+
+/* --- ページ余白を左右対称にする -----------------------------
+   テーマ本体は綴じ本を前提に @page :left / :right で左右非対称の
+   余白（25mm / 30mm）を持つ。本ペーパーは A3 センター2つ折で
+   綴じがないため、ノドを避ける必要がなく、対称にして紙面を広く使う。
+   ---------------------------------------------------------- */
+@page {
+  margin-top: 10mm;
+  margin-bottom: 10mm;
+}
+
+@page :left {
+  margin-left: 10mm;
+  margin-right: 10mm;
+}
+
+@page :right {
+  margin-left: 10mm;
+  margin-right: 10mm;
+}
+
+/* --- 明示的な改ページ ---------------------------------------
+   4 面構成なので面の切れ目を手で制御する。Markdown 中に
+   `<hr class="page-break" />` を置く。
+   ---------------------------------------------------------- */
+hr.page-break {
+  break-after: page;
+  visibility: hidden;
+}
+
+/* --- 画像 --------------------------------------------------- */
+img {
+  max-width: 100%;
+  border: 1px solid lightgray;
+}
+
+/* --- 汎用フレックスコンテナ --------------------------------- */
+.container {
+  display: flex;
+}
+
+/* --- 書籍紹介ブロック ---------------------------------------
+   <section class="book"><div class="container">
+     <div class="cover"><img …/></div>
+     <div class="detail">…</div>
+   </div></section>
+   ---------------------------------------------------------- */
+.book .cover {
+  flex: 1;
+  padding: 10px;
+}
+
+.book .detail {
+  flex: 2;
+  padding: 10px;
+}
+
+/* --- テキスト＋画像ブロック ---------------------------------
+   <section class="text-image"><div class="container">
+     <div class="text">…</div>
+     <div class="image"><img …/></div>
+   </div></section>
+   ---------------------------------------------------------- */
+.text-image .text {
+  flex: 1;
+  padding: 10px;
+}
+
+.text-image .image {
+  width: 160px;
+  height: auto;
+  padding: 10px;
+}

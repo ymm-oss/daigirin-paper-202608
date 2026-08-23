@@ -1,213 +1,136 @@
-# iosdc-pamphlet-template
+# ゆめみ執筆委員会 フリーペーパー
 
-iOSDC Japan に投稿するパンフレット記事のテンプレートです。作者が iOSDC Japan 2023 で投稿したものを元に作成しました。
+ゆめみ執筆委員会の活動紹介フリーペーパーの原稿とビルド構成です。Markdown で書いた原稿を [Vivliostyle](https://vivliostyle.org/) で組版し、PDF を出力します。
 
-## 利用実績
+[mitsuharu/iosdc-pamphlet-template](https://github.com/mitsuharu/iosdc-pamphlet-template) を元に作成しました。
 
-iOSDC Japan 2023
+## 出力の前提
 
-- 参照：[2023に寄稿したパンフレット記事](https://speakerdeck.com/mitsuharu/redux-saga-for-swift-contributed-to-iosdc-2023-pamphlet)
+**A4 仕上がり・中央 2 つ折りのパンフレット**を想定しています。判型は `vivliostyle.config.js` の `size: 'A4'` で指定しています。
 
-iOSDC Japan 2024
+出力は **A4 単ページの連なり**です。面付け（折り前の大判に 2 面ずつ配置すること）はこのリポジトリでは行いません。折ったときの面の並びは次のようになるため、PDF のページ順と紙面上の配置は一致しません。
 
-- 現在設定されている組版です
-- 2023 版を元に、フォントサイズと余白を調整しました
-- 参照：[2024に寄稿したパンフレット記事](https://speakerdeck.com/mitsuharu/iosdc-2024-pamphlet)
+| PDF ページ | 面 |
+|:--|:--|
+| 1 | 表紙 |
+| 2 | 中面（左） |
+| 3 | 中面（右） |
+| 4 | 裏表紙 |
 
-色について
+折って冊子にする前提なので、**ページ数は偶数**である必要があります。原稿を増減させるときは偶数を保ってください。
 
-- 色の見た目は印刷の都合上、紙版と電子版で異なります
-- 実際の色味は紙のパンフレットを確認してください
-- 素人判断ですが、色（主にコードブロックの色）は問題ないと思っています
+なお元テンプレートは綴じ本を想定しており、テーマが `@page :left` / `@page :right` でノド側を避けた左右非対称の余白を持ちます。2 つ折りには綴じがなく、ノドを避ける必要がないため、`theme/styles/styles.css` で左右対称に上書きしています。
 
-## 環境
+## リポジトリ構成
 
-- macOS Tahoe 26.5.1 で確認しました
+| パス | 内容 |
+|:--|:--|
+| `manuscripts/index.md` | 原稿。本文と独自クラスの HTML ブロック |
+| `manuscripts/images/` | 原稿で使う画像 |
+| `theme/styles/styles.css` | 本ペーパー独自のスタイル |
+| `vivliostyle.config.js` | 判型・テーマ・出力先の設定 |
+| `prh-rules/` | textlint の表記ゆれ辞書 |
+| `output/` | 生成物（Git 管理外） |
 
-### 必須（ローカルでビルドする場合）
-
-- Node.js 24 以上
-  - vivliostyle を利用するためです
-- 作者は nodenv-aliases を使って設定しています
-  - see: [nodenv\-aliases を使って node\-version の管理を簡単にしよう](https://qiita.com/mitsuharu_e/items/d7005c52c9910ca0d366)
-- Yarn v4
-  - `corepack enable` で corepack を有効にしてください
-
-### 任意
-
-- Visual Studio Code
-  - ファイル保存で textlint が走るので便利（推奨）
-- Docker Desktop
-  - 入稿データ作成に利用します
-  - Makefile のコマンドを実行すると colima を利用します
-
-## 設定
-
-段組設定は `theme/styles/styles.css` で定義される `column-count` をお好みで設定してください。
-
-```css
-:root {
-  /* 段組の設定 1 or 2 */
-  column-count: 1;
-}
-```
-
-2段組にて、画像を幅一杯に表示したい場合は次のタグを利用してください。
-
-```html
-<figure class="column-top">
-  <img src="./images/bubble-sort.png">
-  <figcaption>キャプション</figcaption>
-</figure>
-```
-
-その他、CSS は　`theme/styles/styles.css` で適宜定義して利用してください。
-
-## 執筆手順（ローカル）
-
-### 初期設定
-
-Yarn を利用される方は、corepack を有効にしてください。
+## セットアップ
 
 ```shell
 corepack enable
 ```
 
-環境構築
-
 ```shell
 yarn
 ```
 
-### 電子版のPDF作成
+## PDF の作成
 
-PDFを作成する。`output/output.pdf` に出力されます。
+`output/output.pdf` に出力されます。
 
 ```shell
 yarn pdf
 ```
 
-PDFを開く。
+PDF を開く。
 
 ```shell
 yarn open
 ```
 
-PDFの作成と開くを同時に行う。
+作成と表示を同時に行う。
 
 ```shell
 yarn start
 ```
 
-### 入稿データの作成
+### press-ready 版
 
-Docker で実行する（推奨）。`output/press.pdf` に出力されます。
+`output/press.pdf` に出力されます。Docker で実行する場合は `yarn press`、ローカルで実行する場合は `yarn press-local`。
 
 ```shell
 yarn press
 ```
 
-ローカル環境で実行する  （Docker Desktop が無い場合は make press の方が推奨です）
-
-```shell
-yarn press-local
-```
-
-## 執筆手順（Docker）
-
-- ローカル環境に Node や Docker Desktop を入れたく無い人向け
-- Docker (colima) 上でビルドします
-  - Docker Desktop は不要です
-
-### Make コマンド
-
-- make hogehoge で完結します
-
-|コマンド|内容|
-|:--|:--|
-| make run | pdfを生成して開く |
-| make pdf | pdfを生成する |
-| make press | プレス版のpdfを生成する |
-| make lint | textlintを実行する |
-| make open | pdfを開く |
-| make clean | 生成ファイルをすべて削除 |
-| make clean_pdf | pdf関係の生成物を削除 |
-| make clean_docker | Docker関係の生成物を削除 |
-
 ## 文章校正
 
-校正ツール [textlint](https://textlint.github.io/) を利用して、文章校正ができます。なお、この lint ツールの使用は任意です。書き方で悩んだ・校正したい場合など、必要に応じて導入してください。
-
-### ルール
-
-次のルールを導入しています。
-
-- preset-ja-spacing
-  - 日本語周りにおけるスペースの有無を決定する
-- preset-ja-technical-writing
-  - 技術文書向けの textlint ルールプリセット
-- textlint-rule-spellcheck-tech-word
-  - WEB+DB 用語統一ルールベースの単語チェック
-  - （deprecated になっているので置き換えたい）
-- Rules for TechBooster
-  - TechBooster の [ルール](https://github.com/TechBooster/ReVIEW-Template/tree/master/prh-rules) を使用しています。
-  - iOS に関するルールはほとんどないので適宜追加してください。
-
-その他、スペルチェックのルール `textlint-rule-spellchecker` がありますが、エディターのスペルチェックと競合しやすいので、今回は追加していません。VS Code を利用している場合は、プラグイン [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker) を追加すれば、スペルチェックが行われます。
-
-### 実行
-
-`./manuscripts/` 配下のファイルすべてに対して textlint を行う。
-
 ```shell
-yarn lint 
+yarn lint
 ```
 
-特定のファイルに対して実行する。
+## 原稿で使える独自クラス
 
-```shell
-yarn textlint ./manuscripts/hogehoge.md
+`theme/styles/styles.css` で定義しています。
+
+### `.book` — 表紙とテキストを横並びにする書籍紹介
+
+```html
+<section class="book">
+    <div class="container">
+        <div class="cover"><img src="…" alt="…" /></div>
+        <div class="detail">
+            <h3>書名</h3>
+            <p>紹介文</p>
+        </div>
+    </div>
+</section>
 ```
 
-VS Code を利用している場合は、プラグイン [vscode\-textlint](https://marketplace.visualstudio.com/items?itemName=taichi.vscode-textlint) を追加すれば、ファイル保存時に自動実行されます。他のエディターをご利用の方は [ここ](https://textlint.github.io/docs/integrations.html) からそれぞれのプラグインを追加してください。
+表紙幅は実寸で固定しています。flex 比率にすると紙面幅に応じて表紙の高さが変わり、ブロックが入りきらず面の下部に余白が出ます。
 
-### 無効
+### `.book-gallery` — 表紙だけを並べる
 
-あるファイルを textlint の対象から外したい場合は `.textlintignore` にそのファイルを追加してください。また、ファイル内の特定の文章に対してルールを無効にしたい場合は、次のように記述してください。
-
-```text
-<!-- textlint-disable -->
-textlint を無効にしたい文章をここに書く
-<!-- textlint-enable -->
+```html
+<section class="book-gallery">
+    <div class="gallery-item">
+        <img src="…" alt="…" />
+        <div class="caption">書名</div>
+    </div>
+</section>
 ```
 
-### textlint MCP
+3 列固定です。`calc()` で gap を差し引いてから割っているので、紙面幅が変わっても列数は崩れません。
 
-- 「現在のファイルをtextlint MCPを使って、見つかったテキストの問題を説明してください」などでAIアシスタントに校正を依頼してください
-- 詳細は https://efcl.info/2025/06/10/textlint-mcp/ を参照してください
+### `.text-image` — テキストと画像を横並びにする
 
-## テーマ変更
+```html
+<section class="text-image">
+    <div class="container">
+        <div class="text">…</div>
+        <div class="image"><img src="…" /></div>
+    </div>
+</section>
+```
 
-- 利用してるテーマは [@mitsuharu/vivliostyle\-theme\-iosdc\-pamphlet](https://www.npmjs.com/package/@mitsuharu/vivliostyle-theme-iosdc-pamphlet) です
-  - 標準テーマの `"@vivliostyle/theme-techbook"` をベースにしています
-  - 拙作なので、PR など歓迎です
-- フォントサイズなど簡単な変更は `./theme/styles/styles.css` を適宜修正する
+### `hr.page-break` — 明示的な改ページ
 
-## セキュリティ対策
+```html
+<hr class="page-break" />
+```
 
-ローカルおよび CI で、[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) を利用して、npm パッケージの安全性を確認できます。
+## テンプレートからの変更点
 
-### ローカル環境
+- ページ余白を左右対称に上書きしています（理由は「出力の前提」を参照）
+- 上記の独自クラスを追加しています
 
-[@aikidosec/safe-chain](https://github.com/AikidoSec/safe-chain) の README にしたがって、ローカル環境にインストールしてください。なお、Docker を利用される場合は、安全確認したパッケージがインストールされるので原則的に対応不要です。
+## 過去の版
 
-### CI
-
-package.json またはロックファイルの変更を含む PR が作成されたら、GitHub Actions でパッケージが確認されます。なお、Actions で利用する`@aikidosec/safe-chain` はバージョン固定しています。`@aikidosec/safe-chain` が更新されたら、それ自身の安全性を確認した後に、次のファイルを更新してください。
-
-- `.github/workflows/aikidosec-safe-chain.yml`
-	- `name: Install safe-chain` の `export SAFE_CHAIN_VERSION=1.3.2` で指定するバージョンを更新する
-
-### 参照
-
-- [Vivliostyleの公式テーマをカスタマイズして、ゆめみ大技林 '22のテーマを作った](https://zenn.dev/macneko/articles/06aec138a357b9)
+- [ymm-oss/daigirin-paper-202504](https://github.com/ymm-oss/daigirin-paper-202504) — 本リポジトリの前身
