@@ -123,7 +123,7 @@ img {
 .book .cover {
   /* 表紙幅を実寸で固定する。flex 比率だと紙面幅に応じて高さが変わり、
      ブロックが入りきらず面下部に余白が出る（1 面目で発生した） */
-  flex: 0 0 45mm;
+  flex: 0 0 43mm;
   padding: 4mm 4mm 4mm 0;
 }
 
@@ -242,4 +242,17 @@ img {
 .image-single img {
   width: 90mm;
   height: auto;
+}
+
+/* --- インラインコードを途中で改行させない ---------------------
+   テーマ基底は --vs-overflow-wrap: anywhere を既定にしており、
+   メールアドレスや URL が任意の位置で分断される。
+   セレクタはテーマの prism/base.css の `:not(pre) > code` に合わせる。
+   単に `code` だと詳細度（0,0,1 対 0,0,2）で負けて
+   white-space: normal が残る。
+   ---------------------------------------------------------- */
+:not(pre) > code {
+  overflow-wrap: normal;
+  word-break: keep-all;
+  white-space: nowrap;
 }
